@@ -1,0 +1,23 @@
+<ion-view view-title="Listas">
+    <ion-nav-buttons side="primary">
+		<a
+			href="#/tab/lista-add"
+			class="button button-icon icon ion-android-add">
+		</a>
+    </ion-nav-buttons>
+    <ion-content>
+    	<div ng-if="loading">
+    		<ion-spinner></ion-spinner>
+    	</div>
+    	<ion-list>
+    		<ion-item collection-repeat="lista in listas" href="#/tab/lista/{{$index}}">
+    			{{lista.title}}
+    			<p>{{lista.observation}}</p>
+    			<p ng-if="!lista.observation">Nenhuma observação.</p>
+    		</ion-item>
+    	</ion-list>
+
+    	<h1 ng-if="noData">Você não tem nenhuma lista para exibir</h1>
+
+    </ion-content>
+</ion-view>

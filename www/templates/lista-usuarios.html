@@ -1,0 +1,18 @@
+<ion-view view-title="Usuarios">
+    <ion-content>
+    	<div ng-if="loading">
+    		<ion-spinner></ion-spinner>
+    	</div>
+    	<ion-list>
+    		<ion-item
+    			ng-repeat="user in users">
+    			{{user.name}}
+				<ion-option-button
+					class="button button-assertive"
+					ng-click="">
+					Remover
+				</ion-option-button>
+    		</ion-item>
+    	</ion-list>
+    </ion-content>
+</ion-view>

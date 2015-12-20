@@ -1,0 +1,25 @@
+<ion-view view-title="Adicionar lista">
+    <ion-nav-buttons side="right">
+		<button
+			href="#/tab/lista-add"
+			class="button"
+			ng-click="save()"
+			ng-disabled="!newList.title">
+			Salvar
+		</button>
+    </ion-nav-buttons>
+    <ion-content>
+		<div class="list">
+			<form action="">
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Título</span>
+					<input type="text" ng-model="newList.title" required>
+				</label>
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Observação</span>
+					<textarea ng-model="newList.observation" cols="30" rows="10"></textarea>
+				</label>
+			</form>
+		</div>
+    </ion-content>
+</ion-view>
