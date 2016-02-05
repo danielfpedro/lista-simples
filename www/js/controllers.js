@@ -4,8 +4,10 @@ angular.module('starter.controllers', [])
     $scope,
     $firebaseArray,
     FirebaseRef,
-    Lista
+    Lista,
+    authData
 ) {
+    console.log(authData.displayName);
     $scope.listas = Lista.getFromCache();
 
     $scope.loading = ($scope.listas.length > 0) ? false : true;
@@ -19,8 +21,8 @@ angular.module('starter.controllers', [])
     var newData = $firebaseArray(query);
     newData.$loaded()
         .then(function(){
-            Lista.setToCache($scope.listas);
             $scope.listas = newData;
+            Lista.setToCache($scope.listas);
 
             $scope.listas.$watch(function(){
                 Lista.setToCache($scope.listas);
@@ -50,16 +52,17 @@ angular.module('starter.controllers', [])
     $scope,
     $stateParams,
     $firebaseArray,
+    $ionicListDelegate,
     FirebaseRef,
     Todo,
     Lista
 ) {
     $scope.noData = false;
-    console.log($stateParams);
+    console.log($stateParams.listId);
     $scope.lista = Lista.getFromCache()[$stateParams.listId];
     $scope.todos = [];
     console.log($scope.lista);
-    $scope.loading = ($scope.lista.length > 0) ? false : true;
+    $scope.loading = ($scope.lista) ? false : true;
 
     var ref = FirebaseRef;
     
@@ -93,6 +96,7 @@ angular.module('starter.controllers', [])
         });
     $scope.done = function(todoId){
         Todo.done($scope.lista.$id, todoId);
+        $ionicListDelegate.closeOptionButtons();
     };
 })
 .controller('TodoAddController', function(
@@ -145,6 +149,19 @@ angular.module('starter.controllers', [])
         console.log($scope.users);
     });
     console.log($scope.users);
+})
+.controller('LoginController', function(
+    $scope,
+    Login
+) {
+    $scope.doLogin = function(){
+        if (prod) {
+            Login.doLoginNative();
+        } else {
+            Login.doLoginWeb();
+        }
+        
+    }
 })
 .controller('Proto', function(
     $scope,

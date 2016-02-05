@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 // 
 
-prod = false;
+prod = true;
 
 angular.module('starter', [
     'ionic',
@@ -50,13 +50,22 @@ angular.module('starter', [
     })
 
     // Each tab has its own nav history stack:
-
+    .state('login', {
+        url: '/login',
+        templateUrl: 'templates/login.html',
+        controller: 'LoginController'
+    })
     .state('tab.listas', {
         url: '/listas',
         views: {
             'tab-listas': {
                 templateUrl: 'templates/tab-listas.html',
                 controller: 'ListasController'
+            }
+        },
+        resolve: {
+            authData: function(Login){
+                return Login.authData();
             }
         }
     })
@@ -127,6 +136,6 @@ angular.module('starter', [
     });
 
     // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/tab/listas');
+    $urlRouterProvider.otherwise('/login');
 
 });

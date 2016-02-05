@@ -3,7 +3,12 @@ angular.module('starter.services', [])
 .factory('FirebaseRef', function() {
     return new Firebase('https://minha-lista.firebaseio.com');
 })
-
+.factory('Auth', function(
+    FirebaseRef,
+    $firebaseAuth
+) {
+    return $firebaseAuth(FirebaseRef);
+})
 .factory('Lista', function(
     $ionicLoading,
     $cordovaToast,
@@ -101,4 +106,76 @@ angular.module('starter.services', [])
             return defer.promise;
         }
     };
+})
+.factory('Login', function(
+    $q,
+    $state,
+    $firebaseAuth,
+    FirebaseRef,
+    Auth
+) {
+    return {
+        authData: function(){
+            var defer = $q.defer();
+            Auth.$onAuth(function(authData){
+                if (authData) {
+                    defer.resolve(authData.facebook);
+                } else {
+                    defer.reject();
+                }
+            });
+            return defer.promise;
+        },
+        doLoginWeb: function(){
+            var defer = $q.defer();
+
+            var refAuth = $firebaseAuth(FirebaseRef);
+
+                refAuth.$authWithOAuthPopup("facebook").then(function(authData) {
+                    console.log('redirecionando');
+                    $state.go('tab.listas');
+                    defer.resolve();
+                }).catch(function(error) {
+                    defer.reject(error);
+                });
+
+                return defer.promise;
+        },
+        doLoginNative: function(){
+            var defer = $q.defer();
+
+            this.getAccessToken()
+                .then(function(token){
+                    var ref = FirebaseRef;
+                    ref.authWithOAuthToken("facebook", token, function(error, authData) {
+                        if (error) {
+                            defer.reject(error);
+                        } else {
+                            $state.go('tab.listas')
+                            defer.resolve();
+                        }
+                    });
+                    
+                }, function(error){
+                    defer.reject(error);
+                });
+            return defer.promise;
+        },
+        getAccessToken: function() {
+            var defer = $q.defer();
+            var fbLoginSuccess = function (userData) {
+                facebookConnectPlugin.getAccessToken(function(token) {
+                    defer.resolve(token)
+                });
+            }
+
+            facebookConnectPlugin.login(["public_profile"], fbLoginSuccess,
+                function (error) {
+                    defer.reject();
+                }
+            );
+
+            return defer.promise;
+        }
+    }
 });
